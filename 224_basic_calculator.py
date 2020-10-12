@@ -49,12 +49,58 @@ class Solution:
         self.cmp(num, cal)
         return num.pop()
 
+# modified start of mine
+class Solution:
+
+    def cmp(self, num_stack: list, cal_stack: list):
+        num2 = num_stack[-1]
+        num_stack.pop()
+        num1 = num_stack[-1]
+        num_stack.pop()
+        cal = cal_stack[-1]
+        cal_stack.pop()
+        num_stack.append(num1 + num2 * (1, -1)[cal == '-'])
+        return
+
+    def calculate(self, s: str) -> int:
+        num_stack = []
+        cal_stack = []
+        num, i = 0, 0
+        compute_flag = False
+
+        while i < len(s):
+            if s[i].isdigit():
+                start = i
+                while i < len(s) and s[i].isdigit():
+                    i += 1
+                num = int(s[start:i])
+                num_stack.append(num)
+                if compute_flag:
+                    self.cmp(num_stack, cal_stack)
+                continue
+
+            if s[i] in '+-':
+                cal_stack.append(s[i])
+                compute_flag = True
+
+            if s[i] == '(':
+                compute_flag = False
+
+            if s[i] == ')':
+                compute_flag = True
+                if len(num_stack) > 1:
+                    self.cmp(num_stack, cal_stack)
+
+            i += 1
+
+        return num_stack.pop()
+
 
 # second method
 def calculate(self, s):
     res, num, sign, stack = 0, 0, 1, [1]
     s = ''.join(s.split())
-    for i in s+'+':
+    for i in s + '+':
         if i.isdigit():
             num = 10 * num + int(i)
         elif i in '+-':
@@ -85,7 +131,7 @@ class Solution:
                 total += signs.pop() * int(s[start:i])
                 continue
             if c in '+-(':
-                signs += signs[-1] * (1, -1)[c == '-1'],
+                signs += signs[-1] * (1, -1)[c == '-'],
             elif c == ')':
                 signs.pop()
             i += 1
